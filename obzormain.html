@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ваш сайт - Обзор</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Open+Sans:wght@700&display=swap">
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      margin: 0;
+      background-color: #f8f9fa;
+      display: flex;
+      align-items: stretch;
+      justify-content: stretch;
+      height: 100vh;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    body.loaded {
+      opacity: 1;
+    }
+
+    #container {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      animation: slideIn 1s ease-in-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(-50px);
+      }
+      to {
+        transform: translateX(0);
+      }
+    }
+
+    #sidebar {
+      width: 200px;
+      background: linear-gradient(180deg, #0077B5 0%, #005686 100%);
+      color: #ffffff;
+      padding-top: 20px;
+      transition: width 0.5s;
+      overflow-y: auto;
+      border-radius: 0 15px 15px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: fadeIn 1s ease-in-out;
+      box-shadow: 2px 2px 10px #001F3F;
+    }
+
+    #sidebar:hover {
+      width: 250px;
+      background: linear-gradient(180deg, #005686 0%, #00456B 100%);
+      box-shadow: 5px 5px 15px #001F3F;
+    }
+
+    .sidebar-item {
+      padding: 12px 15px;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: bold;
+      color: #ffffff;
+      display: block;
+      transition: background-color 0.3s;
+      border-radius: 0 15px 15px 0;
+      margin-bottom: 5px;
+      border-right: 5px solid transparent;
+      cursor: pointer;
+    }
+
+    .sidebar-item:hover {
+      background-color: #00456B;
+      border-right-color: #ffffff;
+    }
+
+    #content {
+      flex: 1;
+      padding: 16px;
+      position: relative;
+      background-color: #f8f9fa;
+      border-radius: 0 15px 15px 0;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .profile-tile {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      border: 2px solid #0077B5;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    h2 {
+      color: #0077B5;
+      border-bottom: 2px solid #0077B5;
+      padding-bottom: 8px;
+    }
+
+    .profile-info {
+      margin-top: 10px;
+    }
+
+    #support-button {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background-color: #0077B5;
+      color: #ffffff;
+      padding: 14px 20px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s, transform 0.3s ease-in-out;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    #support-button:hover {
+      background-color: #00456B;
+      transform: scale(1.05);
+    }
+  </style>
+  <script>
+    $(document).ready(function() {
+      document.body.classList.add("loaded");
+    });
+
+    function getProfileInformation() {
+      var contractNumber = $('#inputContractNumber').val();
+
+      $.ajax({
+        type: 'POST',
+        url: 'get_profile.php',
+        data: { contractNumber: contractNumber },
+        dataType: 'json',
+        success: function(response) {
+          if (response.error) {
+            alert(response.error);
+          } else {
+            $('#profileFirstName').text(response.first_name);
+            $('#profileLastName').text(response.last_name);
+            $('#profilePosition').text(response.position);
+          }
+        },
+        error: function(xhr, status, error) {
+          console.error(xhr.responseText);
+          alert('Произошла ошибка при запросе к серверу. Пожалуйста, проверьте консоль для получения более подробной информации.');
+        }
+      });
+
+      return false;
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      var myAccountsButton = document.getElementById('my-accounts-link');
+
+      myAccountsButton.addEventListener('click', function(event) {
+        event.preventDefault();
+        window.location.href = 'api.html';
+      });
+    });
+  </script>
+</head>
+<body>
+  <div id="container">
+    <div id="sidebar">
+      <button class="sidebar-item" onclick="location.href='#overview'">Обзор</button>
+      <button class="sidebar-item" onclick="location.href='mybalance.html'">Мой баланс</button>
+      <button class="sidebar-item" onclick="location.href='myteam.html'">Моя команда</button>
+      <hr>
+      <button class="sidebar-item" onclick="location.href='#copytrading'">Копитрейдинг</button>
+      <button class="sidebar-item" onclick="location.href='#strategy'">Стратегия</button>
+      <a id="my-accounts-link" href="api.html" class="sidebar-item">Мои аккаунты</a>
+      <hr>
+      <button class="sidebar-item" onclick="location.href='#settings'">Настройки</button>
+      <button class="sidebar-item" onclick="location.href='#logout'">Выход с аккаунта</button>
+    </div>
+
+    <div id="content">
+      <h2>Обзор</h2>
+      <form id="profileForm">
+        <div class="form-group">
+          <label for="inputContractNumber">Контрактный номер:</label>
+          <input type="text" id="inputContractNumber" name="contractNumber" placeholder="Введите контрактный номер" required>
+        </div>
+        <button type="button" onclick="getProfileInformation()">Получить информацию</button>
+      </form>
+      <div class="profile-tile">
+        <h2>Профиль</h2>
+        <div class="profile-info">
+          <p>Имя: <span id="profileFirstName"></span></p>
+          <p>Фамилия: <span id="profileLastName"></span></p>
+          <p>Должность: <span id="profilePosition"></span></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button id="support-button" onclick="window.open('https://t.me/Previuyshni', '_blank')">Поддержка</button>
+</body>
+</html>

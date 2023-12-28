@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход/Регистрация</title>
+  <style>
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(to right, #ffffff 0%, #ccffff 100%);
+      text-align: center;
+      padding: 20px;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    h2 {
+      color: #333333;
+      margin-bottom: 20px;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .tab {
+      display: inline-block;
+      margin: 10px;
+      padding: 10px 20px;
+      background-color: #00A8E8;
+      color: #fff;
+      border-radius: 12px;
+      cursor: pointer;
+      opacity: 1;
+      animation: fadeIn 1s ease-in-out, slideIn 0.5s forwards;
+    }
+
+    .tab:hover {
+      background-color: #006F9D;
+      transform: scale(1.05);
+      transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+    }
+
+    .tab-content {
+      display: none;
+      background: linear-gradient(to top right, #ff00ff 0%, #ccff66 100%);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(204, 204, 204, 0.2);
+      animation: slideIn 0.5s forwards, fadeIn 1s ease-in-out;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      max-width: 400px;
+      z-index: 2;
+      opacity: 0;
+    }
+
+    .tab-content.active {
+      animation: fadeIn 0.5s ease-in-out, slideIn 0.5s ease-in-out;
+      opacity: 1;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-20px);
+      }
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    .balance-container {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background-color: #FFFFFF;
+      padding: 10px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(204, 204, 204, 0.1);
+      z-index: 1;
+    }
+
+    form {
+      max-width: 100%;
+      margin: 0 auto;
+      background: linear-gradient(to top right, #66ff99 0%, #3333ff 100%);
+	  background-size: cover; 
+      background-position: center;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px rgba(204, 204, 204, 0.2);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 10px;
+      text-align: left;
+      color: #555555;
+      font-size: 14px;
+    }
+
+    input {
+      width: calc(100% - 24px);
+      padding: 12px;
+      margin-bottom: 20px;
+      box-sizing: border-box;
+      border: 1px solid #CCCCCC;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    button {
+      background-color: #FF7F50;
+      color: #fff;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    button:hover {
+      background-color: #FF6347;
+    }
+
+    p {
+      margin-top: 20px;
+      color: #555555;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .register-link {
+      margin-top: 10px;
+      color: #555555;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: underline;
+      opacity: 1;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    .register-link:hover {
+      color: #006F9D;
+    }
+  </style>
+</head>
+<body>
+  <h2>Выберите действие</h2>
+
+  <div class="tab" onclick="openTab('login')">Вход</div>
+  <div class="tab" onclick="openTab('register')">Регистрация</div>
+
+  <div id="login" class="tab-content active">
+    <h2>Вход</h2>
+  <form action="login.php" method="post">
+    <label for="email">Ваш Email:</label>
+      <input type="email" id="email" name="email" required>
+      <label for="password">Ваш пароль:</label>
+      <input type="password" id="password" name="password" required>
+    <button type="submit" onclick="redirectToLogin()">Войти</button>
+    <p class="register-link" onclick="openRegister()">Нету учетной записи? Зарегистрироваться</p>
+  </form>
+  </div>
+
+  <div id="register" class="tab-content">
+    <h2>Регистрация</h2>
+    <form action="registr.php" method="post" onsubmit="return validateReferralCode()">
+      <label for="nickname">Ваш никнейм:</label>
+      <input type="text" id="nickname" name="nickname" required>
+      <label for="email_reg">Ваш e-mail:</label>
+      <input type="email" id="email_reg" name="email_reg" required>
+      <label for="password_reg">Пароль:</label>
+      <input type="password" id="password_reg" name="password_reg" required>
+      <label for="referral_code">Реферральный код:</label>
+      <input type="text" id="referral_code" name="referral_code" pattern="#[0-9]{6}" title="Please use a valid referral code (e.g., #123456)">
+      <button type="submit">Зарегистрироваться</button>
+      <p class="register-link" onclick="openLogin()">Уже есть аккаунт? Вернуться к входу</p>
+    </form>
+  </div>
+
+  <script>
+    function validateReferralCode() {
+      // Проверка формата реферального кода
+      var referralCodeInput = document.getElementById('referral_code');
+      var referralCodePattern = /^#[0-9]{6}$/;
+      
+      if (!referralCodePattern.test(referralCodeInput.value)) {
+        alert('Пожалуйста, введите корректный реферральный код в формате #123456.');
+        return false; // Остановка отправки формы
+      }
+
+      return true; // Продолжение отправки формы
+    }
+
+    // Остальной ваш JavaScript-код
+    function redirectToLogin() {
+      window.location.href = 'login.html';
+    }
+
+    function openTab(tabName) {
+      var tabs = document.getElementsByClassName("tab-content");
+      for (var i = 0; i < tabs.length; i++) {
+        tabs[i].style.display = "none";
+        tabs[i].classList.remove("active");
+      }
+      var activeTab = document.getElementById(tabName);
+      activeTab.style.display = "block";
+      activeTab.classList.add("active");
+    }
+
+    function openRegister() {
+      openTab('register');
+    }
+
+    function openLogin() {
+      openTab('login');
+    }
+  </script>
+</body>
+</html>
